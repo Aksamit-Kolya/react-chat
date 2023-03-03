@@ -58,17 +58,17 @@ const ChatPage = ({ user }) => {
             }
           >
             <div className="message-text-container">
-              <div className="message-author">{message.author}</div>
               <div className="message-text">{message.text}</div>
             </div>
           </div>
         ))}
         <div ref={messagesEndRef} />
       </div>
-      <form onSubmit={handleMessageSubmit}>
+      <hr className="divider"/>
+      <form onSubmit={handleMessageSubmit} className="message-input-container">
         <input
           type="text"
-          placeholder="Type your message..."
+          placeholder="Send a message"
           value={newMessage}
           onChange={(event) => setNewMessage(event.target.value)}
           className="message-input"
