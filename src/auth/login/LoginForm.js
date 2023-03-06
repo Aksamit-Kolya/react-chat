@@ -68,6 +68,7 @@ function LoginForm () {
                 <div className="dscError" >{formErrors['login']}</div>
                 <input type="text"
                        name="login"
+                       required
                        value={login}
                        className={errorClass(loginValid)}
                        onChange={(e) => {handleUserInput(e)}}/>
@@ -75,6 +76,7 @@ function LoginForm () {
                 <div className="dscError" >{formErrors['password']}</div>
                 <input type="password"
                        name="password"
+                       required
                        value={password}
                        className={errorClass(passwordValid)}
                        onChange={(e) => {handleUserInput(e)}}/>

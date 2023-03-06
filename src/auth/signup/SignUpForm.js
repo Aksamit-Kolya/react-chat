@@ -78,6 +78,7 @@ function SignUpForm () {
             <div className="label">Sign up</div>
             <div className="dscError" >{formErrors['login']}</div>
             <input type="text"
+                   required
                    name="login"
                    value={login}
                    className={errorClass(loginValid)}
@@ -85,12 +86,14 @@ function SignUpForm () {
             <div className="label">Password</div>
             <div className="dscError" >{formErrors['password']}</div>
             <input type="password"
+                   required
                    name="password"
                    value={password}
                    className={errorClass(passwordValid)}
                    onChange={(e) => {handleUserInput(e)}}/>
             <div className="label">Confirm password</div>
             <input type="password"
+                   required
                    name="password2"
                    value={confirmPassword}
                    className={errorClass(confirmPasswordValid)}
