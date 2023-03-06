@@ -9,9 +9,7 @@ class ChatService {
                     text: message
                 },
                 {
-                    headers: {
-                        'authorization': 'Bearer ' + localStorage.getItem('accessToken')
-                    },
+
                     crossDomain: true
                 }
         );
