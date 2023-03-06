@@ -14,6 +14,18 @@ class ChatService {
                 }
         );
     }
+
+    static async findHistory(page, size) {
+        return await axios.get("http://localhost:8080/api/chat",
+            {
+                params: {page: page, size: size}
+            },
+            {
+
+                crossDomain: true
+            }
+        );
+    }
 }
 
 export default ChatService;

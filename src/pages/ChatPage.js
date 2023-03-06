@@ -36,26 +36,9 @@ const ChatPage = ({ user }) => {
   };
 
   useEffect(() => {
-    // simulate fetching messages from a server
-    setTimeout(() => {
-      setMessages([
-        {
-          id: 1,
-          author: "John",
-          text: "Hello!",
-        },
-        {
-          id: 2,
-          author: user,
-          text: "Hi there!",
-        },
-        {
-          id: 3,
-          author: "John",
-          text: "How are you doing?",
-        },
-      ]);
-    }, 1000);
+    ChatService.findHistory(0, 20).then(response => {
+      setMessages(response.data)
+    });
   }, [user]);
 
   useEffect(() => {
@@ -77,11 +60,11 @@ const ChatPage = ({ user }) => {
       id: newId,
       author: user,
       text: newMessage,
+      isUserOwner: true
     };
     ChatService.sendMessage(newMessage).then(response => {
       console.log('TEST: ' + response)
     });
-    
     setMessages([...messages, newMessageObject]);
     setNewMessage("");
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -94,7 +77,7 @@ const ChatPage = ({ user }) => {
           <div
             key={message.id}
             className={
-              message.author === user ? "message user-message" : "message other-message"
+              message.isUserOwner ? "message user-message" : "message other-message"
             }
           >
             <div className="message-text-container">
