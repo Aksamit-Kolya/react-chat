@@ -7,36 +7,38 @@ const ChatPage = ({ user }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [newMessageCount, setNewMessageCount] = useState(0);
   const messagesEndRef = useRef(null);
   const [loadingMessagesPageSize, setLoadingMessagesPageSize] = useState(5);
   const [isAllMessagesLoaded, setIsAllMessagesLoaded] = useState(false);
+  const prevMessages = usePreviousValue(messages);
+
+  function usePreviousValue(value) {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
+  }
+  
 
   const loadMessages = () => {
     if(isAllMessagesLoaded) return;
+    
     setLoading(true);
     const messagesContainer = document.querySelector(".messages-container");
+    
     ChatService.findHistory(Math.floor(messages.length / loadingMessagesPageSize), loadingMessagesPageSize).then((response) => {
-      setMessages([...response.data.slice(messages.length % loadingMessagesPageSize), ...messages]);
+      setMessages([...response.data.slice(0, Math.min(loadingMessagesPageSize - messages.length % loadingMessagesPageSize, response.data.length - messages.length % loadingMessagesPageSize)), ...messages]);
       messagesContainer.scrollTop = 43.3 * loadingMessagesPageSize * (loadingMessagesPageSize - messages.length % loadingMessagesPageSize) / loadingMessagesPageSize;
       setLoadingMessagesPageSize(loadingMessagesPageSize + 5);
+      
       if(response.data.length < loadingMessagesPageSize) {
         setIsAllMessagesLoaded(true);
       }
+      
       setLoading(false);
-    }).catch(() => setIsAllMessagesLoaded(true));
+    });
   };
-
-  useEffect(() => {
-    if (newMessageCount > 0) {
-      const messagesContainer = document.querySelector(".messages-container");
-      messagesContainer.classList.add("new-messages");
-      setTimeout(() => {
-        messagesContainer.classList.remove("new-messages");
-        setNewMessageCount(0);
-      }, 3000);
-    }
-  }, [newMessageCount]);
 
   useEffect(() => {
     ChatService.findHistory(0, 20).then(response => {
@@ -46,27 +48,23 @@ const ChatPage = ({ user }) => {
   }, [user]);
 
   useEffect(() => {
-    // scroll to the bottom of the message container when new messages are added
-    if(messages.length < 21) messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-
+    if(messages.length < 21 || prevMessages[prevMessages.length - 1] !== messages[messages.length - 1]) messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleMessageSubmit = (event) => {
     event.preventDefault();
     if (newMessage.trim() === '') return;
-    const newId = messages.length + 1;
     const newMessageObject = {
-      id: newId,
       author: user,
       text: newMessage,
-      isUserOwner: true
+      isUserOwner: true,
+      isNewMessage: true
     };
     ChatService.sendMessage(newMessage).then(response => {
       console.log('TEST: ' + response)
     });
     setMessages([...messages, newMessageObject]);
     setNewMessage("");
-    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleMessagesContainerScroll = (event) => {
