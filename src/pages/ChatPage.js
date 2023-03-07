@@ -17,11 +17,10 @@ const ChatPage = ({ user }) => {
     setLoading(true);
     const messagesContainer = document.querySelector(".messages-container");
     ChatService.findHistory(Math.floor(messages.length / loadingMessagesPageSize), loadingMessagesPageSize).then((response) => {
-      if(response.data.length !== 0) {
-        setMessages([...response.data.slice(messages.length % loadingMessagesPageSize), ...messages]);
-        messagesContainer.scrollTop = 43.3 * loadingMessagesPageSize * (loadingMessagesPageSize - messages.length % loadingMessagesPageSize) / loadingMessagesPageSize;
-        setLoadingMessagesPageSize(loadingMessagesPageSize + 5);
-      } else {
+      setMessages([...response.data.slice(messages.length % loadingMessagesPageSize), ...messages]);
+      messagesContainer.scrollTop = 43.3 * loadingMessagesPageSize * (loadingMessagesPageSize - messages.length % loadingMessagesPageSize) / loadingMessagesPageSize;
+      setLoadingMessagesPageSize(loadingMessagesPageSize + 5);
+      if(response.data.length < loadingMessagesPageSize) {
         setIsAllMessagesLoaded(true);
       }
       setLoading(false);
