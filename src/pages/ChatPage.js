@@ -7,50 +7,50 @@ const ChatPage = ({ user }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [newMessageCount, setNewMessageCount] = useState(0);
   const messagesEndRef = useRef(null);
-  
+  const [loadingMessagesPageSize, setLoadingMessagesPageSize] = useState(5);
+  const [isAllMessagesLoaded, setIsAllMessagesLoaded] = useState(false);
+
   const loadMessages = () => {
+    if(isAllMessagesLoaded) return;
     setLoading(true);
-    // simulate fetching new messages from a server
-    setTimeout(() => {
-      const newMessages = [
-        {        
-          id: messages.length + 1,        
-          author: "John",        
-          text: "Did you see the game last night?",      
-        },      
-        {        
-          id: messages.length + 2,        
-          author: user,        
-          text: "No, I missed it. Who won?",      
-        },      
-        {        
-          id: messages.length + 3,        
-          author: "John",        
-          text: "The Lakers. It was a great game!",      
-        },    
-      ];
-      setMessages([...newMessages, ...messages]);
+    const messagesContainer = document.querySelector(".messages-container");
+    ChatService.findHistory(Math.floor(messages.length / loadingMessagesPageSize), loadingMessagesPageSize).then((response) => {
+      if(response.data.length !== 0) {
+        setMessages([...response.data.slice(messages.length % loadingMessagesPageSize), ...messages]);
+        messagesContainer.scrollTop = 43.3 * loadingMessagesPageSize * (loadingMessagesPageSize - messages.length % loadingMessagesPageSize) / loadingMessagesPageSize;
+        setLoadingMessagesPageSize(loadingMessagesPageSize + 5);
+      } else {
+        setIsAllMessagesLoaded(true);
+      }
       setLoading(false);
-    }, 1000);
+    }).catch(() => setIsAllMessagesLoaded(true));
   };
 
   useEffect(() => {
+    if (newMessageCount > 0) {
+      const messagesContainer = document.querySelector(".messages-container");
+      messagesContainer.classList.add("new-messages");
+      setTimeout(() => {
+        messagesContainer.classList.remove("new-messages");
+        setNewMessageCount(0);
+      }, 3000);
+    }
+  }, [newMessageCount]);
+
+  useEffect(() => {
     ChatService.findHistory(0, 20).then(response => {
-      setMessages(response.data)
+      setMessages(response.data);
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     });
   }, [user]);
 
   useEffect(() => {
     // scroll to the bottom of the message container when new messages are added
-    //messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    const messagesContainer = document.querySelector(".messages-container");
-    messagesContainer.addEventListener("scroll", () => {
-      if (messagesContainer.scrollTop === 0 && !loading) {
-        loadMessages();
-      }
-    });
-  }, [messages, loading]);
+    if(messages.length < 21) messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+
+  }, [messages]);
 
   const handleMessageSubmit = (event) => {
     event.preventDefault();
@@ -70,9 +70,16 @@ const ChatPage = ({ user }) => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
+  const handleMessagesContainerScroll = (event) => {
+    event.preventDefault();
+    if (event.target.scrollTop === 0 && !loading) {
+      loadMessages();
+    }
+  }
+
   return (
     <div className="chat-container">
-      <div className="messages-container">
+      <div className="messages-container" onScroll={handleMessagesContainerScroll}>
         {messages.map((message) => (
           <div
             key={message.id}
@@ -90,7 +97,7 @@ const ChatPage = ({ user }) => {
       <hr className="divider"/>
       <form onSubmit={handleMessageSubmit} className="message-input-container">
         <input
-          type="text"
+          type="textarea"
           placeholder="Send a message"
           value={newMessage}
           onChange={(event) => setNewMessage(event.target.value)}

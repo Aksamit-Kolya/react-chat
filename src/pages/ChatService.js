@@ -14,7 +14,6 @@ class ChatService {
                 }
         );
     }
-
     static async findHistory(page, size) {
         return await axios.get("http://localhost:8080/api/chat",
             {

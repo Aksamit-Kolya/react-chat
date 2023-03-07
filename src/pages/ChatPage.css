@@ -93,3 +93,23 @@
     border-top: 1px solid #ddd;
     margin: 0;
   }
+
+  .messages-container.new-messages .message {
+    opacity: 0;
+    transform: translateY(10px);
+    animation-name: fadeIn;
+    animation-duration: 0.5s;
+    animation-delay: 0.2s;
+    animation-fill-mode: forwards;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
