@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "./ChatPage.css";
 import ChatService from './ChatService';
 import arrowImage from "./arrow.png";
+import * as StompJs from "@stomp/stompjs";
 
 const ChatPage = ({ user }) => {
   const [messages, setMessages] = useState([]);
@@ -19,7 +20,6 @@ const ChatPage = ({ user }) => {
     });
     return ref.current;
   }
-  
 
   const loadMessages = () => {
     if(isAllMessagesLoaded) return;
@@ -39,6 +39,38 @@ const ChatPage = ({ user }) => {
       setLoading(false);
     });
   };
+
+  useEffect(() => {
+    const client = new StompJs.Client({
+      brokerURL: "ws://localhost:8080/actions",
+      debug: function (str) {
+        console.log(str);
+      },
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+    });
+
+    client.onConnect = function () {
+
+      client.subscribe('/user/async/api/action', (response) => {
+        const messageDto = JSON.parse(response.body);
+
+        const message = {
+          messageId: messageDto.messageId,
+          text: messageDto.text,
+          isUserOwner: messageDto.isUserOwner,
+          userId: messageDto.userId}
+        setMessages([...messages, message]);
+      }, {"Authorization": 'Bearer ' + localStorage.getItem("accessToken")});
+    }
+
+    client.onStompError = (frame) => {
+      console.error(frame.headers['message']);
+      console.error('Details:', frame.body);
+    };
+    client.activate();
+  }, [])
 
   useEffect(() => {
     ChatService.findHistory(0, 20).then(response => {
@@ -63,7 +95,7 @@ const ChatPage = ({ user }) => {
     ChatService.sendMessage(newMessage).then(response => {
       console.log('TEST: ' + response)
     });
-    setMessages([...messages, newMessageObject]);
+    //setMessages([...messages, newMessageObject]);
     setNewMessage("");
   };
 
