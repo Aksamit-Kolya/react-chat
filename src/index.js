@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { BrowserRouter } from 'react-router-dom'
+import {BrowserRouter, useNavigate} from 'react-router-dom'
 import axios from "axios";
 
 let failedQueue = [];
@@ -50,6 +50,10 @@ axios.interceptors.response.use(
             return Promise.reject(error);
         };
 
+        if (refreshToken == null && originalRequest?.url !== 'http://localhost:8080/api/auth/refresh') {
+            window.location.href = '/';
+        }
+
         // Refresh token conditions
         if (
             refreshToken &&
@@ -80,7 +84,10 @@ axios.interceptors.response.use(
                     localStorage.setItem('refreshToken', res?.data['refreshToken']);
 
                     return axios(originalRequest);
-                }).finally(() => {
+                }).catch(() => {
+                    window.location.href = '/';
+                })
+                .finally(() => {
                     isRefreshing = false;
                 });
         }
@@ -90,6 +97,7 @@ axios.interceptors.response.use(
             error.response?.status === 401 &&
             error.response?.data?.message === "TokenExpiredError"
         ){
+            window.location.href = '/';
             return handleError(error);
         }
 
