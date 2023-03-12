@@ -25,6 +25,15 @@ class ChatService {
             }
         );
     }
+    static async deleteMessage(messageId) {
+        return await axios.delete("http://localhost:8080/api/chat/" + messageId,
+                {},
+                {
+
+                    crossDomain: true
+                }
+        );
+    }
 }
 
 export default ChatService;
