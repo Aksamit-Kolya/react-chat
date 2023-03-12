@@ -33,25 +33,75 @@
     justify-content: flex-start;
   }
   
-  .message-text-container {
+  .message-row-container {
     display: flex;
     flex-direction: column;
+  }
+  
+  .message-data-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-message .message-data-container {
+    align-items: end;
+  }
+  .other-message .message-data-container {
+    align-items: start;
+  }
+
+  .message-box {
+    display: flow;
     padding: 10px 16px;
     border-radius: 50px;
   }
-  
-  .user-message .message-text-container {
+
+  .user-message .message-box {
+    align-items: end;
     background-color: #f2f2f2;
+    align-items: end;
+    border-bottom-right-radius: 0px;
   }
 
-  .other-message .message-text-container {
+  .other-message .message-box {
+    align-items: start;
     border: 1px solid #d8d8d8;
+    border-bottom-left-radius: 0px;
+    align-items: start;
+  }
+
+  .user-message.same-time .message-box{
+    border-bottom-right-radius: 25px;
+  }
+
+  .other-message.same-time .message-box{
+    border-bottom-left-radius: 25px;
+  }
+
+
+  .message.user-message.same-time + .message.user-message .message-box{
+    border-top-right-radius: 25px;
   }
   
+  .message.other-message.same-time + .message.other-message .message-box{
+    border-top-left-radius: 25px;
+  }
+
+  .message-author {
+    font-weight: bold;
+    font-size: 12px;
+  }
+
   .message-text {
     font-size: 14px;
   }
   
+  .message-date {
+    font-size: 12px;
+    color: #aaa;
+    padding: 0px 5px;
+  }
+
   .message-input-container {
     display: flex;
     flex-direction: row;
@@ -88,6 +138,10 @@
     filter: invert(100%);
   }
 
+  .send-button-image:hover {
+    filter: brightness(90%);
+  }
+
   .divider {
     border: none;
     border-top: 1px solid #ddd;
@@ -113,3 +167,35 @@
       transform: translateY(0);
     }
   }
+
+  .context-menu {
+    position: absolute;
+    z-index: 999;
+    border: 1px solid #d4d4d4;
+    background-color: #ffffff;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 6px 0;
+    width: 120px;
+  }
+  
+  .context-menu button {
+    background-color: transparent;
+    border: none;
+    color: #333333;
+    cursor: pointer;
+    display: block;
+    font-size: 10px;
+    padding: 4px 10px;
+    text-align: left;
+    width: 100%;
+  }
+  
+  .context-menu button:hover {
+    background-color: #f7f7f7;
+  }
+
+  .context-menu-icon {
+    margin-right: 10px;
+  }
+
