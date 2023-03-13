@@ -137,7 +137,9 @@
     border-radius: 6px;
     padding: 6px 0;
     width: 120px;
+    transition: opacity 1s ease-out, transform 1s ease-out;
   }
+
   
   .context-menu button {
     background-color: transparent;

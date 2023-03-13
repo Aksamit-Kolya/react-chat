@@ -4,8 +4,8 @@
   import * as StompJs from "@stomp/stompjs";
   import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
   import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-  import TextField from '@mui/material/TextField';
   import MessageInput from "../components/MessageInput";
+  import ChatMessage from "../components/ChatMessage";
 
 
   const ChatPage = ({ user }) => {
@@ -31,7 +31,6 @@
     const prevMessages = usePreviousValue(messages);
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [contextMenuPosition, setContextMenuPosition] = useState({ top: 0, left: 0 });
-    const [editingMessage, setEditingMessage] = useState(null);
 
     function usePreviousValue(value) {
       const ref = useRef();
@@ -137,7 +136,6 @@
 
     const handleUpdateMessage = (event) => {
       event.preventDefault();
-      setEditingMessage(selectedMessage);
       // const updatedMessages = messages.filter((message) => message.id !== selectedMessage.id);
       // customSetMessages(updatedMessages);
       // setSelectedMessage(null);
@@ -157,13 +155,6 @@
       if(!event.target.closest('.message-box')) {
         setSelectedMessage(null);
       }
-      if(!event.target.closest('.edit-message-input')){
-        setEditingMessage(null);
-      }
-    }
-
-    function handleEditFormClick(event) {
-      ///event.stopPropagation();
     }
 
     return (
@@ -171,36 +162,23 @@
         <div className="messages-container" onScroll={handleMessagesContainerScroll}>
           {
             messages.map((message) => (
-              <div
+              <ChatMessage
                 key={message.messageId}
-                className={
-                  message.isUserOwner ? 
-                    message.shouldDisplayDate ? "message user-message" : "message user-message same-time" :
-                    message.shouldDisplayDate ? "message other-message" : "message other-message same-time"
-                }
-                
-              >
-                <div className="message-row-container">
-                  <div className="message-data-container">
-                    <div className="message-box" onClick={(event) => {
-                        event.preventDefault();
-                        setSelectedMessage(message);
-                        setContextMenuPosition({ top: event.pageY, left: calculateContextMenuLeftPosition(event.pageX) });
-                      }}>
-                      <div className="message-author">{!message.isUserOwner && message.login}</div>
-                      <div className="message-text">{message.text}</div>
-                    </div>
-                    {message.shouldDisplayDate && (
-                      <div className="message-date">{new Date(message.dateTime).toLocaleTimeString([], {hour: 'numeric', minute: '2-digit', hour12: true}).replace(/^0/, '')}</div>
-                    )}
-                  </div>
-                </div>
-              </div>
+                message={message}
+                selected={message === selectedMessage}
+                onMessageClick={(message, event) => {
+                  event.preventDefault();
+                  if(message.isUserOwner) {
+                    setSelectedMessage(message);
+                    setContextMenuPosition({ top: event.pageY, left: calculateContextMenuLeftPosition(event.pageX) });
+                  }
+                }}
+            />
             )
           )}
           <div ref={messagesEndRef} />
         </div>
-        {selectedMessage && !editingMessage ? 
+        {selectedMessage &&  
           (
             <div className="context-menu" style={{position: "absolute", top: contextMenuPosition.top, left: contextMenuPosition.left }}>
               <button onClickCapture={handleUpdateMessage}>
@@ -212,40 +190,6 @@
                 Delete
               </button>
             </div>
-          )
-        :
-          editingMessage && (
-            <form className="edit-message-form" onClickCapture={handleEditFormClick} onSubmit={handleUpdateMessage} style={{top: contextMenuPosition.top, left: contextMenuPosition.left}}>
-              <div id="input" contenteditable data-placeholder="Enter your text"></div>
-              <TextField
-                className="edit-message-input"
-                multiline
-                variant="outlined"
-                sx={{
-                  "& .MuiOutlinedInput-root.Mui-focused": {
-                    "& > fieldset": {
-                      borderColor: "black",
-                      borderWidth: 1
-                    }
-                  }
-                }}
-                InputProps={{
-                  style: {
-                    borderRadius: '5px',
-                    margin: '5px',
-                    width: '135%',
-                    height: '10px',
-                    fontSize: '12px',
-                  }
-                }}
-              />
-              <div className="edit-message-buttons-container">
-                <button type="submit">Edit</button>
-                <button type="button" onClick={() => setEditingMessage(null)}>
-                  Cancel
-                </button>
-              </div>
-            </form>
           )
         }
         <hr className="divider"/>
