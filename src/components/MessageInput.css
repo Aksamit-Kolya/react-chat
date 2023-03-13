@@ -1,0 +1,29 @@
+.message-input-form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 10px;
+}
+
+.send-message-button {
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    border: none;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.send-message-button-image {
+    width: 23px;
+    height: 23px;
+    object-fit: contain;
+    filter: invert(100%);
+}
+
+.send-message-button-image:hover {
+    filter: brightness(90%);
+}

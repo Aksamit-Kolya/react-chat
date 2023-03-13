@@ -102,46 +102,6 @@
     padding: 0px 5px;
   }
 
-  .message-input-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 10px;
-  }
-  
-  .message-input {
-    flex: 1;
-    padding: 10px;
-    border-radius: 20px;
-    border: 1px solid #d8d8d8;
-    margin-left: 30px;
-    margin-right: 10px;
-    font-size: 14px;
-  }
-  
-  .send-button {
-    width: 23px;
-    height: 23px;
-    border-radius: 50%;
-    border: none;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-  }
-  
-  .send-button-image {
-    width: 23px;
-    height: 23px;
-    object-fit: contain;
-    filter: invert(100%);
-  }
-
-  .send-button-image:hover {
-    filter: brightness(90%);
-  }
-
   .divider {
     border: none;
     border-top: 1px solid #ddd;

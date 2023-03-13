@@ -1,11 +1,11 @@
   import React, {useEffect, useRef, useState} from "react";
   import "./ChatPage.css";
   import ChatService from './ChatService';
-  import arrowImage from "./arrow.png";
   import * as StompJs from "@stomp/stompjs";
   import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
   import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
   import TextField from '@mui/material/TextField';
+  import MessageInput from "../components/MessageInput";
 
 
   const ChatPage = ({ user }) => {
@@ -23,7 +23,6 @@
       setMessages(messages);
     }
 
-    const [newMessage, setNewMessage] = useState("");
     const [receivedMessage, setReceivedMessage] = useState({});
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef(null);
@@ -118,15 +117,6 @@
 
 
     }, [messages]);
-
-    const handleMessageSubmit = (event) => {
-      event.preventDefault();
-      console.log('1: ' + messages);
-      ChatService.sendMessage(newMessage).then(response => {
-        console.log('TEST: ' + response)
-      });
-      setNewMessage("");
-    };
 
     const handleMessagesContainerScroll = (event) => {
       event.preventDefault();
@@ -259,18 +249,7 @@
           )
         }
         <hr className="divider"/>
-        <form onSubmit={handleMessageSubmit} className="message-input-container">
-          <input
-            type="textarea"
-            placeholder="Send a message"
-            value={newMessage}
-            onChange={(event) => setNewMessage(event.target.value)}
-            className="message-input"
-          />
-          <button type="submit" className="send-button">
-            <img src={arrowImage} alt="Send" className="send-button-image" />
-          </button>
-        </form>
+        <MessageInput />
       </div>
     );
   };
