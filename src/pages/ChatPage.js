@@ -78,6 +78,7 @@
             messageId: messageDto.messageId,
             text: messageDto.text,
             dateTime: messageDto.dateTime,
+            login: messageDto.login,
             isUserOwner: messageDto.isUserOwner,
             userId: messageDto.userId}
           setReceivedMessage(message);
@@ -96,7 +97,7 @@
     useEffect(() => {
       ChatService.findHistory(0, 20).then(response => {
         
-        customSetMessages(response.data.map((element) => {return { ...element, author: element.login }})); ///setMessages(response.data));
+        customSetMessages(response.data.map((element) => {return { ...element, login: element.login }})); ///setMessages(response.data));
         messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
       });
     }, [user]);
@@ -176,7 +177,7 @@
                         setSelectedMessage(message);
                         setContextMenuPosition({ top: event.pageY, left: calculateContextMenuLeftPosition(event.pageX) });
                       }}>
-                      <div className="message-author">{!message.isUserOwner && message.author}</div>
+                      <div className="message-author">{!message.isUserOwner && message.login}</div>
                       <div className="message-text">{message.text}</div>
                     </div>
                     {message.shouldDisplayDate && (
