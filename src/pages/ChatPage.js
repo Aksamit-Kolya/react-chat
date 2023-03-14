@@ -23,7 +23,7 @@
       setMessages(messages);
     }
 
-    const [receivedMessage, setReceivedMessage] = useState({});
+    const [remoteChatEvent, setRemoteChatEvent] = useState({});
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef(null);
     const [loadingMessagesPageSize, setLoadingMessagesPageSize] = useState(5);
@@ -75,20 +75,7 @@
       client.onConnect = () => {
 
         client.subscribe('/user/async/api/action', (response) => {
-          if(JSON.parse(response.body).actionType === 'DELETE_MESSAGE') {
-            const messageId = JSON.parse(response.body).messageId;
-            customSetMessages(messages.filter(el => el.messageId !== messageId));
-            return;
-          }
-          const messageDto = JSON.parse(response.body);
-          const message = {
-            messageId: messageDto.messageId,
-            text: messageDto.text,
-            dateTime: messageDto.dateTime,
-            login: messageDto.login,
-            isUserOwner: messageDto.isUserOwner,
-            userId: messageDto.userId}
-          setReceivedMessage(message);
+          setRemoteChatEvent(JSON.parse(response.body));
         }, {"Authorization": 'Bearer ' + localStorage.getItem("accessToken")});
       }
 
@@ -111,8 +98,33 @@
     }, [user]);
 
     useEffect(() => {
-      customSetMessages([...messages, receivedMessage]);
-    }, [receivedMessage]);
+      
+      switch (remoteChatEvent.actionType) {
+        case "ADD_MESSAGE":
+
+          const messageDto = remoteChatEvent;
+          const newMessage = {
+            messageId: messageDto.messageId,
+            text: messageDto.text,
+            dateTime: messageDto.dateTime,
+            login: messageDto.login,
+            isUserOwner: messageDto.isUserOwner,
+            userId: messageDto.userId}
+          customSetMessages([...messages, newMessage]);
+
+          break;
+        case "UPDATE_MESSAGE":
+          
+          break;
+        case "DELETE_MESSAGE":
+          const messageId = remoteChatEvent.messageId;
+          customSetMessages(messages.filter(el => el.messageId !== messageId));
+          break;
+        default:
+          break;
+      }
+      
+    }, [remoteChatEvent]);
 
     useEffect(() => {
 
