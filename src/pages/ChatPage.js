@@ -96,7 +96,7 @@
     useEffect(() => {
       ChatService.findHistory(0, 20).then(response => {
         
-        customSetMessages(response.data.map((element) => {return { ...element, author: 'Dima Lox' }})); ///setMessages(response.data));
+        customSetMessages(response.data.map((element) => {return { ...element, author: element.login }})); ///setMessages(response.data));
         messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
       });
     }, [user]);
