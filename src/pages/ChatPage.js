@@ -75,7 +75,11 @@
       client.onConnect = () => {
 
         client.subscribe('/user/async/api/action', (response) => {
-          if(JSON.parse(response.body).actionType === 'DELETE_MESSAGE') return; // TODO: fix
+          if(JSON.parse(response.body).actionType === 'DELETE_MESSAGE') {
+            const messageId = JSON.parse(response.body).messageId;
+            customSetMessages(messages.filter(el => el.messageId !== messageId));
+            return;
+          }
           const messageDto = JSON.parse(response.body);
           const message = {
             messageId: messageDto.messageId,
