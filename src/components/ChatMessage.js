@@ -22,7 +22,8 @@ const ChatMessage = ({ message, selected, onMessageClick }) => {
     "user-message": message.isUserOwner,
     "other-message": !message.isUserOwner,
     "same-time": !message.shouldDisplayDate,
-    "selected": selected
+    "selected": selected,
+    "multi-line": message.text.split('\n').length > 1
   });
 
   return (
@@ -33,7 +34,13 @@ const ChatMessage = ({ message, selected, onMessageClick }) => {
             {!message.isUserOwner && (
               <div className="message-author">{message.login}</div>
             )}
-            <div className="message-text">{message.text}</div>
+            <div className="message-text">{message.text.split('\n').map((text, index) => (
+              <React.Fragment key={index}>
+                {text}
+                <br />
+              </React.Fragment>
+            ))}
+          </div>
           </div>
           {message.shouldDisplayDate && (
             <div className="message-date">

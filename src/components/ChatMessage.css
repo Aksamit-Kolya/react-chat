@@ -42,6 +42,10 @@
     transition: background-color 0.3s, border-color 0.3s;
   }
 
+  .multi-line .message-box{
+    border-radius: 15px;
+  }
+
   .user-message .message-box {
     align-items: end;
     background-color: #f2f2f2;
@@ -65,13 +69,20 @@
     border-bottom-left-radius: 25px;
   }
 
-
   .message.user-message.same-time + .message.user-message .message-box{
     border-top-right-radius: 25px;
   }
   
   .message.other-message.same-time + .message.other-message .message-box{
     border-top-left-radius: 25px;
+  }
+
+  .user-message.same-time.multi-line .message-box{
+    border-bottom-right-radius: 15px;
+  }
+
+  .other-message.same-time.multi-line .message-box{
+    border-bottom-left-radius: 15px;
   }
 
   .message-author {

@@ -31,6 +31,8 @@
     const prevMessages = usePreviousValue(messages);
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [contextMenuPosition, setContextMenuPosition] = useState({ top: 0, left: 0 });
+    const [editingMessage, setEditingMessage] = useState(null);
+    const messageInputRef = useRef(null);
 
     function usePreviousValue(value) {
       const ref = useRef();
@@ -152,6 +154,8 @@
 
     const handleUpdateMessage = (event) => {
       event.preventDefault();
+      setEditingMessage(selectedMessage);
+      messageInputRef.current.setEditingMessage(selectedMessage);
       // const updatedMessages = messages.filter((message) => message.id !== selectedMessage.id);
       // customSetMessages(updatedMessages);
       // setSelectedMessage(null);
@@ -209,7 +213,12 @@
           )
         }
         <hr className="divider"/>
-        <MessageInput />
+        <MessageInput 
+          ref={messageInputRef}
+          editingMessage={editingMessage}
+          onCancelEditing={() => setEditingMessage(null)}
+          onMessageEdit={() => setEditingMessage(null)}
+        />
       </div>
     );
   };

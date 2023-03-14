@@ -9,7 +9,6 @@ class ChatService {
                     text: message
                 },
                 {
-
                     crossDomain: true
                 }
         );
@@ -20,7 +19,6 @@ class ChatService {
                 params: {page: page, size: size}
             },
             {
-
                 crossDomain: true
             }
         );
@@ -29,7 +27,14 @@ class ChatService {
         return await axios.delete("http://localhost:8080/api/chat/" + messageId,
                 {},
                 {
-
+                    crossDomain: true
+                }
+        );
+    }
+    static async editMessage(messageId, newText) {
+        return await axios.put("http://localhost:8080/api/chat/" + messageId,
+                {text: newText},
+                {
                     crossDomain: true
                 }
         );

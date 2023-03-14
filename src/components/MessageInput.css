@@ -27,3 +27,34 @@
 .send-message-button-image:hover {
     filter: brightness(90%);
 }
+
+.editing-message-container {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .editing-message-text {
+    font-size: 14px;
+    font-weight: 500;
+    margin-right: 10px;
+  }
+  
+  .editing-message-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    font-size: 20px;
+  }
+  .editing-message-cancel-button {
+    font-size: 18px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: #b5b5b5;
+    margin-left: auto;
+    margin-right: 10px;
+  }
