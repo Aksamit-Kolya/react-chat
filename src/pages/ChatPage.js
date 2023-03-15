@@ -120,6 +120,7 @@
             if(el.messageId !== remoteChatEvent.messageId) return el;
             else {
               el.text = remoteChatEvent.text;
+              el.isEdit = true;
               return el;
             } 
           }));

@@ -31,16 +31,29 @@ const ChatMessage = ({ message, selected, onMessageClick }) => {
       <div className="message-row-container">
         <div className="message-data-container">
           <div className="message-box" onClick={handleClick}>
-            {!message.isUserOwner && (
-              <div className="message-author">{message.login}</div>
-            )}
-            <div className="message-text">{message.text.split('\n').map((text, index) => (
-              <React.Fragment key={index}>
-                {text}
-                <br />
-              </React.Fragment>
-            ))}
-          </div>
+            {message.isEdit && message.isUserOwner && (
+                <div style={{display: "inline-block", marginRight: "10px", marginLeft: "-6px", fontSize: "14px"}}>
+                  &#9998;
+                </div>
+              )}
+            <div style={{display: "inline-block"}}>
+              {!message.isUserOwner && (
+                <div className="message-author">{message.login}</div>
+              )}
+              <div className="message-text">
+                {message.text.split('\n').map((text, index) => (
+                  <React.Fragment key={index}>
+                    {text}
+                    <br />
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+            {message.isEdit && !message.isUserOwner && (
+                <div style={{display: "inline-block", marginLeft: "10px", marginRight: "-6px", fontSize: "14px"}}>
+                  &#9998;
+                </div>
+              )}
           </div>
           {message.shouldDisplayDate && (
             <div className="message-date">
