@@ -116,7 +116,13 @@
 
           break;
         case "UPDATE_MESSAGE":
-          
+          customSetMessages(messages.map(el => {
+            if(el.messageId !== remoteChatEvent.messageId) return el;
+            else {
+              el.text = remoteChatEvent.text;
+              return el;
+            } 
+          }));
           break;
         case "DELETE_MESSAGE":
           const messageId = remoteChatEvent.messageId;
