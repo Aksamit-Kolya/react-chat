@@ -31,7 +31,7 @@ const ChatMessage = ({ message, selected, onMessageClick }) => {
       <div className="message-row-container">
         <div className="message-data-container">
           <div className="message-box" onClick={handleClick}>
-            {message.isEdit && message.isUserOwner && (
+            {message.isEdit && (
                 <div style={{display: "inline-block", marginRight: "10px", marginLeft: "-6px", fontSize: "14px"}}>
                   &#9998;
                 </div>
@@ -49,11 +49,6 @@ const ChatMessage = ({ message, selected, onMessageClick }) => {
                 ))}
               </div>
             </div>
-            {message.isEdit && !message.isUserOwner && (
-                <div style={{display: "inline-block", marginLeft: "10px", marginRight: "-6px", fontSize: "14px"}}>
-                  &#9998;
-                </div>
-              )}
           </div>
           {message.shouldDisplayDate && (
             <div className="message-date">
