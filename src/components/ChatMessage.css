@@ -36,6 +36,7 @@
   }
 
   .message-box {
+    cursor: default;
     display: flow;
     padding: 10px 16px;
     border-radius: 50px;

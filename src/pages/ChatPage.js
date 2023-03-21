@@ -2,11 +2,12 @@
   import "./ChatPage.css";
   import ChatService from './ChatService';
   import * as StompJs from "@stomp/stompjs";
-  import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-  import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
   import MessageInput from "../components/MessageInput";
   import ChatMessage from "../components/ChatMessage";
+  import ContextMenu from "../components/ContextMenu";
 
+  const PAGE_SIZE = 30;
 
   const ChatPage = ({ user }) => {
     const [messages, setMessages] = useState([]);
@@ -26,13 +27,13 @@
     const [remoteChatEvent, setRemoteChatEvent] = useState({});
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef(null);
-    const [loadingMessagesPageSize, setLoadingMessagesPageSize] = useState(5);
     const [isAllMessagesLoaded, setIsAllMessagesLoaded] = useState(false);
     const prevMessages = usePreviousValue(messages);
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [contextMenuPosition, setContextMenuPosition] = useState({ top: 0, left: 0 });
     const [editingMessage, setEditingMessage] = useState(null);
     const messageInputRef = useRef(null);
+    const [oldScrollHeight, setOldScrollHeight] = useState(0);
 
     function usePreviousValue(value) {
       const ref = useRef();
@@ -47,23 +48,17 @@
       
       setLoading(true);
       const messagesContainer = document.querySelector(".messages-container");
-
-      console.log('findHistory(1)');
-      ChatService.findHistory(Math.floor(messages.length / loadingMessagesPageSize), loadingMessagesPageSize).then((response) => {
-        customSetMessages([...response.data.slice(0, Math.min(loadingMessagesPageSize - messages.length % loadingMessagesPageSize, response.data.length - messages.length % loadingMessagesPageSize)), ...messages]);
-        messagesContainer.scrollTop = 43.3 * loadingMessagesPageSize * (loadingMessagesPageSize - messages.length % loadingMessagesPageSize) / loadingMessagesPageSize;
-        setLoadingMessagesPageSize(loadingMessagesPageSize + 5);
-        
-        if(response.data.length < loadingMessagesPageSize) {
+      setOldScrollHeight(messagesContainer.scrollHeight);
+      ChatService.findHistory(messages.length / PAGE_SIZE, PAGE_SIZE).then((response) => {
+        customSetMessages([...response.data.slice(0, PAGE_SIZE - messages.length % PAGE_SIZE), ...messages]);
+        if(response.data.length < PAGE_SIZE) {
           setIsAllMessagesLoaded(true);
         }
-        
         setLoading(false);
       });
     };
 
     useEffect(() => {
-      console.log('### Conncet');
       const client = new StompJs.Client({
         brokerURL: "ws://localhost:8080/actions",
         debug: function (str) {
@@ -91,11 +86,8 @@
 
 
     useEffect(() => {
-      console.log('findHistory(2)');
-      ChatService.findHistory(0, 20).then(response => {
-        
-        customSetMessages(response.data.map((element) => {return { ...element, login: element.login }})); ///setMessages(response.data));
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      ChatService.findHistory(0, PAGE_SIZE).then(response => {
+        customSetMessages(response.data.map((element) => {return { ...element, login: element.login }}));
       });
     }, [user]);
 
@@ -136,9 +128,10 @@
     }, [remoteChatEvent]);
 
     useEffect(() => {
+      const messagesContainer = document.querySelector(".messages-container");
+      if(messagesContainer.scrollTop === 0) messagesContainer.scrollTop = messagesContainer.scrollHeight - oldScrollHeight;
 
-      if(messages.length < 21 || prevMessages[prevMessages.length - 1] !== messages[messages.length - 1]) messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-
+      if(!prevMessages || prevMessages[prevMessages?.length - 1] !== messages[messages.length - 1]) messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
 
     }, [messages]);
 
@@ -149,8 +142,6 @@
         loadMessages();
       }
     }
-
-
   
     const handleDeleteMessage = () => {
       const updatedMessages = messages.filter((message) => message.messageId !== selectedMessage.messageId);
@@ -163,13 +154,10 @@
       event.preventDefault();
       setEditingMessage(selectedMessage);
       messageInputRef.current.setEditingMessage(selectedMessage);
-      // const updatedMessages = messages.filter((message) => message.id !== selectedMessage.id);
-      // customSetMessages(updatedMessages);
-      // setSelectedMessage(null);
     };
 
     function calculateContextMenuLeftPosition(leftPosition) {
-      const contextMenuWidth = 120; // set the width of the context menu here
+      const contextMenuWidth = 120;
       const screenWidth = window.innerWidth;
       if (leftPosition + contextMenuWidth > screenWidth) {
         return leftPosition - contextMenuWidth;
@@ -179,7 +167,7 @@
     }
 
     function handleChatContainerClick(event) {
-      if(!event.target.closest('.message-box')) {
+      if(!event.target.closest('.user-message .message-box')) {
         setSelectedMessage(null);
       }
     }
@@ -190,6 +178,7 @@
           {
             messages.map((message) => (
               <ChatMessage
+                id={message.messageId}
                 key={message.messageId}
                 message={message}
                 selected={message === selectedMessage}
@@ -200,23 +189,18 @@
                     setContextMenuPosition({ top: event.pageY, left: calculateContextMenuLeftPosition(event.pageX) });
                   }
                 }}
-            />
+              />
             )
           )}
           <div ref={messagesEndRef} />
         </div>
         {selectedMessage &&  
           (
-            <div className="context-menu" style={{position: "absolute", top: contextMenuPosition.top, left: contextMenuPosition.left }}>
-              <button onClickCapture={handleUpdateMessage}>
-                <FontAwesomeIcon icon={faEdit} className="context-menu-icon" />
-                Edit
-              </button>
-              <button onClickCapture={handleDeleteMessage}>
-                <FontAwesomeIcon icon={faTrash} className="context-menu-icon" />
-                Delete
-              </button>
-            </div>
+            <ContextMenu 
+              contextMenuPosition={contextMenuPosition}
+              onUpdateMessage={handleUpdateMessage}
+              onDeleteMessage={handleDeleteMessage}
+            />
           )
         }
         <hr className="divider"/>

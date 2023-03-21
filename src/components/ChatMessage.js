@@ -30,8 +30,8 @@ const ChatMessage = ({ message, selected, onMessageClick }) => {
     <div className={messageClasses}>
       <div className="message-row-container">
         <div className="message-data-container">
-          <div className="message-box" onClick={handleClick}>
-            {message.isEdit && (
+          <div className="message-box" onContextMenu={handleClick}>
+            {message.isEdit && message.isUserOwner && (
                 <div style={{display: "inline-block", marginRight: "10px", marginLeft: "-6px", fontSize: "14px"}}>
                   &#9998;
                 </div>
