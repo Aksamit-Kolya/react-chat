@@ -29,24 +29,26 @@ const ChatMessage = ({ message, selected, onMessageClick }) => {
   return (
     <div className={messageClasses}>
       <div className="message-row-container">
-        <div className="message-data-container">
-          <div className="message-box" onContextMenu={handleClick}>
-            {message.isEdit && message.isUserOwner && (
-                <div style={{display: "inline-block", marginRight: "10px", marginLeft: "-6px", fontSize: "14px"}}>
+        <div className="message-data-container" >
+          <div style={{display: "flex", flexDirection: message.isUserOwner ? "row" : "row-reverse", alignItems: "center"}}>
+            {message.isEdit && (
+                <div style={{display: "inline-block", margin: "10px", opacity: 0.35, cursor: "default"}}>
                   &#9998;
                 </div>
               )}
-            <div style={{display: "inline-block"}}>
-              {!message.isUserOwner && (
-                <div className="message-author">{message.login}</div>
-              )}
-              <div className="message-text">
-                {message.text.split('\n').map((text, index) => (
-                  <React.Fragment key={index}>
-                    {text}
-                    <br />
-                  </React.Fragment>
-                ))}
+            <div className="message-box" onContextMenu={handleClick}>
+              <div style={{display: "inline-block"}}>
+                {!message.isUserOwner && (
+                  <div className="message-author">{message.login}</div>
+                )}
+                <div className="message-text">
+                  {message.text.split('\n').map((text, index) => (
+                    <React.Fragment key={index}>
+                      {text}
+                      <br />
+                    </React.Fragment>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

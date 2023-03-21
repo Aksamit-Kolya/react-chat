@@ -37,7 +37,7 @@
 
   .message-box {
     cursor: default;
-    display: flow;
+    display: inline-block;
     padding: 10px 16px;
     border-radius: 50px;
     transition: background-color 0.3s, border-color 0.3s;
@@ -67,7 +67,7 @@
   }
 
   .other-message.same-time .message-box{
-    border-bottom-left-radius: 25px;
+    border-bottom-left-radius: 125px;
   }
 
   .message.user-message.same-time + .message.user-message .message-box{
@@ -76,6 +76,14 @@
   
   .message.other-message.same-time + .message.other-message .message-box{
     border-top-left-radius: 25px;
+  }
+
+  .message.user-message.same-time + .message.user-message.multi-line .message-box{
+    border-top-right-radius: 15px;
+  }
+  
+  .message.other-message.same-time + .message.other-message.multi-line .message-box{
+    border-top-left-radius: 15px;
   }
 
   .user-message.same-time.multi-line .message-box{
