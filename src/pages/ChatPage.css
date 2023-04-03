@@ -4,34 +4,42 @@
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
-  }
+}
   
-  .chat-container {
+.chat-container {
     display: flex;
     flex-direction: column;
     height: 100%;
     justify-content: space-between;
-  }
+    min-width: 300px;
+}
+
+.chat-title {
+  padding: 5px 0 15px 0;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+  font-family: Arial;
+}
   
-  .messages-container {
+.messages-container {
     flex: 1;
     padding: 20px;
     overflow-y: scroll;
-  }
+}
 
-  .divider {
+.divider {
     border: none;
     border-top: 1px solid #ddd;
     margin: 0;
-  }
+}
 
-  .messages-container::-webkit-scrollbar {
+.messages-container::-webkit-scrollbar {
     width: 3px;               /* width of the entire scrollbar */
-  }
+}
   
-  .messages-container::-webkit-scrollbar-thumb {
+.messages-container::-webkit-scrollbar-thumb {
     background-color: rgb(110, 110, 110);    /* color of the scroll thumb */
     border-radius: 20px;       /* roundness of the scroll thumb */
-  }
+}
 
 
