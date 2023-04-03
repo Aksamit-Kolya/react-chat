@@ -16,14 +16,14 @@ function LoginForm () {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        AuthService.login(login, password).then(response => {
-            localStorage.setItem('isAuthenticated', 'true');
-            localStorage.setItem('accessToken', response.data['accessToken']);
-            localStorage.setItem('refreshToken', response.data['refreshToken']);
+        // AuthService.login(login, password).then(response => {
+        //     localStorage.setItem('isAuthenticated', 'true');
+        //     localStorage.setItem('accessToken', response.data['accessToken']);
+        //     localStorage.setItem('refreshToken', response.data['refreshToken']);
             navigation('/chat');
-        }).catch(error => {
-            setResponse(error['response']['data']['message']);
-        });
+        // }).catch(error => {
+        //     setResponse(error['response']['data']['message']);
+        // });
     }
 
     const handleClick = (path) => {

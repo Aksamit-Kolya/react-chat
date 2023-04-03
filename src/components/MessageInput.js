@@ -25,10 +25,8 @@ const MessageInput = ({ onMessageSent, onMessageEdit, onCancelEditing, editingMe
     if(messageValue.replace(/[\n\r\s]+/g, '').length === 0) return;
 
     if(!isEditingMode) {
-      ChatService.sendMessage(messageValue).then(() => {
+      onMessageSent(messageValue);
         setMessageValue("");
-        onMessageSent();
-      });
     } else {
       ChatService.editMessage(editingMessage.messageId, messageValue).then(() => {
         setEditingMode(false);

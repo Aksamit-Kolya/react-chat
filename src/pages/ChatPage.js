@@ -8,6 +8,127 @@
   import ContextMenu from "../components/ContextMenu";
 
   const PAGE_SIZE = 30;
+  const mockMessages = [
+    {
+      messageId: 1,
+      isUserOwner: true,
+      login: "John",
+      text: "Hey Sarah!",
+      dateTime: new Date(2022, 3, 3, 10, 30),
+    },
+    {
+      messageId: 101,
+      isUserOwner: true,
+      login: "John",
+      text: "It's been a while since we talked. How have you been?",
+      dateTime: new Date(2022, 3, 3, 10, 30),
+    },
+    {
+      messageId: 2,
+      isUserOwner: false,
+      login: "Sarah",
+      text: "Hi John!",
+      dateTime: new Date(2022, 3, 3, 10, 32),
+    },
+    {
+      messageId: 202,
+      isUserOwner: false,
+      login: "Sarah",
+      text: "Yeah, it has. I've been doing pretty well, thanks for asking",
+      dateTime: new Date(2022, 3, 3, 10, 32),
+    },
+    {
+      messageId: 203,
+      isUserOwner: false,
+      login: "Sarah",
+      text: "How about you?",
+      dateTime: new Date(2022, 3, 3, 10, 32),
+    },
+    {
+      messageId: 3,
+      isUserOwner: true,
+      login: "John",
+      text: "I'm good too, thanks. So what have you been up to lately?",
+      dateTime: new Date(2022, 3, 3, 10, 35),
+    },
+    {
+      messageId: 4,
+      isUserOwner: false,
+      login: "Sarah",
+      text: "Not much, just working and trying to stay active",
+      dateTime: new Date(2022, 3, 3, 10, 38),
+    },
+    {
+      messageId: 401,
+      isUserOwner: false,
+      login: "Sarah",
+      text: "I joined a yoga class a few weeks ago and I'm really enjoying it",
+      dateTime: new Date(2022, 3, 3, 10, 38),
+    },
+    {
+      messageId: 5,
+      isUserOwner: true,
+      login: "John",
+      text: "That's great!",
+      dateTime: new Date(2022, 3, 3, 10, 40),
+    },
+    {
+      messageId: 52,
+      isUserOwner: true,
+      login: "John",
+      text: "I've been trying to get back into running myself",
+      dateTime: new Date(2022, 3, 3, 10, 40),
+    },
+    {
+      messageId: 53,
+      isUserOwner: true,
+      login: "John",
+      text: "It's been tough to find the time though",
+      dateTime: new Date(2022, 3, 3, 10, 40),
+    },
+    {
+      messageId: 6,
+      isUserOwner: false,
+      login: "Sarah",
+      text: "Yeah, I know what you mean. It can be hard to balance everything",
+      dateTime: new Date(2022, 3, 3, 10, 45),
+    },
+    {
+      messageId: 7,
+      isUserOwner: true,
+      login: "John",
+      text: "That's awesome",
+      dateTime: new Date(2022, 3, 3, 10, 50),
+    },
+    {
+      messageId: 71,
+      isUserOwner: true,
+      login: "John",
+      text: "I've heard yoga is great for that",
+      dateTime: new Date(2022, 3, 3, 10, 50),
+    },
+    {
+      messageId: 8,
+      isUserOwner: false,
+      login: "Sarah",
+      text: "You should! It's been really helpful for me. Plus, the instructor at my class is amazing. She's so knowledgeable and always has great tips and insights.",
+      dateTime: new Date(2022, 3, 3, 10, 52),
+    },
+    {
+      messageId: 9,
+      isUserOwner: true,
+      login: "John",
+      text: "That's awesome. Do you have any other tips or recommendations for me?",
+      dateTime: new Date(2022, 3, 3, 10, 55),
+    },
+    {
+      messageId: 10,
+      isUserOwner: false,
+      login: "Sarah",
+      text: "Hmm, let me think. Well, I've also been trying to eat healthier lately. I've been cooking more at home and trying to incorporate more fruits and vegetables into my diet.",
+      dateTime: new Date(2022, 3, 3, 10, 58),
+    },
+  ];
 
   const ChatPage = ({ user }) => {
     const [messages, setMessages] = useState([]);
@@ -49,46 +170,24 @@
       setLoading(true);
       const messagesContainer = document.querySelector(".messages-container");
       setOldScrollHeight(messagesContainer.scrollHeight);
-      ChatService.findHistory(messages.length / PAGE_SIZE, PAGE_SIZE).then((response) => {
-        customSetMessages([...response.data.slice(0, PAGE_SIZE - messages.length % PAGE_SIZE), ...messages]);
-        if(response.data.length < PAGE_SIZE) {
-          setIsAllMessagesLoaded(true);
-        }
-        setLoading(false);
-      });
+      customSetMessages([...mockMessages, ...messages]);
+      setLoading(false);
+      // ChatService.findHistory(messages.length / PAGE_SIZE, PAGE_SIZE).then((response) => {
+      //   customSetMessages([...response.data.slice(0, PAGE_SIZE - messages.length % PAGE_SIZE), ...messages]);
+      //   if(response.data.length < PAGE_SIZE) {
+      //     setIsAllMessagesLoaded(true);
+      //   }
+      //   setLoading(false);
+      // });
     };
 
-    useEffect(() => {
-      const client = new StompJs.Client({
-        brokerURL: "ws://localhost:8080/actions",
-        debug: function (str) {
-          console.log(str);
-        },
-        reconnectDelay: 5000,
-        heartbeatIncoming: 4000,
-        heartbeatOutgoing: 4000,
-      });
-
-      client.onConnect = () => {
-
-        client.subscribe('/user/async/api/action', (response) => {
-          setRemoteChatEvent(JSON.parse(response.body));
-        }, {"Authorization": 'Bearer ' + localStorage.getItem("accessToken")});
-      }
-
-      client.onStompError = (frame) => {
-        console.error(frame.headers['message']);
-        console.error('Details:', frame.body);
-      };
-      client.activate();
-    }, [])
     
 
 
     useEffect(() => {
-      ChatService.findHistory(0, PAGE_SIZE).then(response => {
-        customSetMessages(response.data.map((element) => {return { ...element, login: element.login }}));
-      });
+      //ChatService.findHistory(0, PAGE_SIZE).then(response => {
+        customSetMessages(mockMessages);
+      //});
     }, [user]);
 
     useEffect(() => {
@@ -210,6 +309,13 @@
           editingMessage={editingMessage}
           onCancelEditing={() => setEditingMessage(null)}
           onMessageEdit={() => setEditingMessage(null)}
+          onMessageSent={(newMessage) => customSetMessages([...messages, {
+            messageId: 123,
+            isUserOwner: true,
+            login: "John",
+            text: newMessage,
+            dateTime: new Date(),
+          }])}
         />
       </div>
     );

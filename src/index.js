@@ -51,7 +51,7 @@ axios.interceptors.response.use(
         };
 
         if (refreshToken == null && originalRequest?.url !== 'http://localhost:8080/api/auth/refresh') {
-            window.location.href = '/';
+            //window.location.href = '/';
         }
 
         // Refresh token conditions
