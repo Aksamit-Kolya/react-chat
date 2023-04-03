@@ -174,7 +174,7 @@
 
     return (
       <div className="chat-container" onClick={handleChatContainerClick}>
-        <div className="chat-title">THE BEST PARTY</div>
+        <div className="chat-title">The Best Party</div>
         <div className="messages-container" onScroll={handleMessagesContainerScroll}>
           {
             messages.map((message) => (

@@ -49,10 +49,10 @@
 
   .user-message .message-box {
     align-items: end;
-    background-color: #f2f2f2;
+    background-color: #ECEBEB;
     align-items: end;
     border-bottom-right-radius: 0px;
-    border: 1px solid #f2f2f2;
+    border: 1px solid #ECEBEB;
   }
 
   .other-message .message-box {
@@ -67,7 +67,7 @@
   }
 
   .other-message.same-time .message-box{
-    border-bottom-left-radius: 125px;
+    border-bottom-left-radius: 25px;
   }
 
   .message.user-message.same-time + .message.user-message .message-box{

@@ -22,6 +22,8 @@ const MessageInput = ({ onMessageSent, onMessageEdit, onCancelEditing, editingMe
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if(messageValue.replace(/[\n\r\s]+/g, '').length === 0) return;
+
     if(!isEditingMode) {
       ChatService.sendMessage(messageValue).then(() => {
         setMessageValue("");
@@ -63,12 +65,13 @@ const MessageInput = ({ onMessageSent, onMessageEdit, onCancelEditing, editingMe
         fullWidth
         InputProps={{
           style: {
-            borderRadius: 50 / numLines,
+            borderRadius: Math.max(50 / numLines, 10),
             fontSize: "14px",
             padding: "10px",
             paddingLeft: "15px",
             paddingTop: "11px",
             paddingBottom: "9px",
+            transition: "border-radius 0.3s ease-in-out"
           },
           onKeyDown: handleKeyDown,
         }}
