@@ -21,6 +21,8 @@ body {
 
 .content {
     width: 20%;
+    min-width: 160px;
+    padding: 0px;
     margin: auto;
     text-align: center;
 }
@@ -31,6 +33,7 @@ body {
     border-radius: 13px;
     margin-bottom: 15px;
     width: 100%;
+    box-sizing: border-box
 }
 
 .label {
