@@ -67,7 +67,7 @@
   }
 
   .other-message.same-time .message-box{
-    border-bottom-left-radius: 125px;
+    border-bottom-left-radius: 25px;
   }
 
   .message.user-message.same-time + .message.user-message .message-box{
