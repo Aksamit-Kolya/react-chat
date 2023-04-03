@@ -58,3 +58,7 @@
     margin-left: auto;
     margin-right: 10px;
   }
+
+  .MuiInputBase-inputMultiline {
+    transition: all 0.2s ease-in-out;
+  }
